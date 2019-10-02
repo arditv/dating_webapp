@@ -1,0 +1,30 @@
+{% extends "mainapp/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+    </div>
+
+    <div class="col-sm-4">
+<h3>Hurry up! Don't miss anything...</h3>
+
+<br/>
+
+      <form method='POST' style="font-size: 20px !important" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          {{form.username}} <div id = "info"></div>
+        <div class="form-group">
+          {{form.password}}
+        </div>
+        <button type="submit" id="btn"class="btn btn-info">Log In</a></button>
+        <br>
+        <a style="font-size: 16px !important" href ="/createAccount/">Not a member? Click here to create an account</a>
+    </div>
+  </div>
+<br/><br/>
+{% endblock %}

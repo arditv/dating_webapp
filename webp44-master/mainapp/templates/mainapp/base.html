@@ -1,0 +1,73 @@
+<!-- This file imports static javascript file from static folder  -->
+
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<title>{{ appname }}</title>
+	<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}" -->
+</head>
+<body>
+	{% if loggedin %}
+		<nav style="background: #ba035b !important"class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="{% url 'matches' %}">{{ appname }}</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li><a href="{% url 'matches' %}">Matches</a></li>
+		    </ul>
+		    <ul class="nav navbar-nav navbar-right">
+		      <li class="active"><a style="background: #990049 !important" href="/profile/"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+		      <li><a href="/logOut/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		    </ul>
+		  </div>
+		</nav>
+	{% else %}
+			<div style="background: #ba035b !important" class="jumbotron text-center">
+				<h1 style= "color: white !important">MatchMe </h1>
+				<p style= "color: white !important">Life is too short to waste time matching socks...</p>
+			</div>
+
+			<!-- <div class ="container-fluid">
+				<div class = "row">
+					<div class ="col-md-4 col-md-offset-5">
+							<div class ="btn-toolbar">
+							<a href= "{% url 'login' %}"button type="submit" id="btn"class="btn btn-info btn-lg center-block">Log In</a></button>
+							<a href ="{% url 'createAccount' %}" button type="submit" id="btn"class="btn btn-info btn-lg center-block">Sign up</a></button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+
+
+
+			<div class ="container-fluid">
+				<div class = "row">
+					<div class ="col-sm-4">
+					</div>
+					<div class ="col-sm-4">
+							<div class ="btn-toolbar">
+							<a href= "{% url 'login' %}"button type="submit" id="btn"class="btn btn-info btn-lg center-block">Log In</a></button>
+							<a href ="{% url 'createAccount' %}" button type="submit" id="btn"class="btn btn-info btn-lg center-block">Sign up</a></button>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+   {% endif %}
+	<br>
+	<ul class='menu'>
+	</ul>
+	<br>
+	{% block content %}
+	{% endblock %}
+	<br>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="{% static '/scripts.js' %}"></script>
+</body>
+</html>

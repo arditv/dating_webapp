@@ -1,0 +1,129 @@
+{% extends "mainapp/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container">
+  <h2>Find someone who matches you...</h2>
+
+  <select id = "gender">
+     <option value="">All</option>
+     <option value="Female">Female</option>
+     <option value="Male">Male</option>
+     <option value="Other">Other</option>
+  </select>
+
+  Age: <input  id="ageFrom" type="value" placeholder="From">
+  <input  id="ageTo" type="value" placeholder="To">
+  <br>
+  <div id = "membertable">
+  </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+  //variables used for  filtering the table
+var ageFrom = 0;
+var ageTo = 1000;
+var gender = "";
+
+//updates the gender field and calls filtering
+$("#gender").change(function() {
+  gender = this.value.toLowerCase();
+  filtering();
+})
+//filters  the table based on age range and gender
+function filtering() {
+  if(ageTo == ""){
+    ageTo = 1000
+  }
+
+  var rows = $("#myTable").find("tr");
+  rows.hide();
+  rows.filter(function () {
+      if(gender == "") return range(ageFrom,ageTo,parseInt($(this).find('.age').text())) && $(this).find('.gender').text().toLowerCase().indexOf(gender) > -1;
+      return range(ageFrom,ageTo,parseInt($(this).find('.age').text())) && $(this).find('.gender').text().toLowerCase() == gender;
+
+    }).show()
+}
+// updates the lower bound of age and calls filtering
+$("#ageFrom").keyup(function(){
+  ageFrom = $('#ageFrom').val();
+  filtering();
+})
+//adjusts upper bound of age and callse filtering
+$("#ageTo").keyup(function(){
+  ageTo = $('#ageTo').val();
+  filtering();
+})
+//function used to decide whether or not the value c is in between a and b
+function range(a, b, c){
+  if(c <= b && c >= a) return true;
+  else return false;
+}
+//renders the table after the ajax call which returns a json response it also decides whether a like or a dislike button should be rendered
+function renderMemberTable(response){
+  current = new Date(Date());
+  var table = "<table class='table table-bordered' style='background: #f9f9f9 !important'><thead><tr><th>Username</th><th>Gender</th><th>Age</th><th>Common Hobbies</th><th>Like</th></tr></thead><tbody id='myTable'>"
+  for (var i = 0; i < response.length; i++){
+    dob = new Date(response[i].dob);
+    age = current.getYear() - dob.getYear()
+    if(response[i].liked == true){
+      table += "<tr><td>" + response[i].name + "</td><td class = 'gender'>" + response[i].gender + "</td><td class = 'age'>" + age + "</td><td>" + response[i].commonh + "</td><td> <button type='button' id='dislikebutton' value= " + response[i].id + ">Dislike</button></tr>";
+    }
+    else{
+      table += "<tr><td>" + response[i].name + "</td><td class = 'gender'>" + response[i].gender + "</td><td class = 'age'>" + age + "</td><td>" + response[i].commonh + "</td><td> <button type='button' id='likebutton' value= " + response[i].id + ">Like</button></tr>";
+    }
+
+  }
+  table += "</tbody></table>"
+  $("#membertable").html(table);
+  filtering();
+}
+//makes a POST request to send the id of the member that was liked by the user
+$(document).on('click', '#likebutton' , function(action){
+  pk = action.currentTarget.attributes[2].value;
+  var token = '{{csrf_token}}';
+  var selected = {"likeID": pk}
+    $.ajax({
+      headers: {"X-CSRFToken" : token},
+      type: 'POST',
+      url: '/likeUser/',
+      datatype: 'json',
+      data: selected,
+      success: refreshTable,
+      error: function(e){console.log("error: " + e)},
+  });
+});
+//makes a POST request to send the id oof the member that was disliked by the user
+$(document).on('click', '#dislikebutton' , function(action){
+  pk = action.currentTarget.attributes[2].value;
+  var token = '{{csrf_token}}';
+  var selected = {"dislikeID": pk}
+    $.ajax({
+      headers: {"X-CSRFToken" : token},
+      type: 'POST',
+      url: '/likeUser/',
+      datatype: 'json',
+      data: selected,
+      success: refreshTable,
+      error: function(e){console.log("error: " + e)},
+  });
+});
+//calls getUsers which gets the updated list of people with the same hobbies and the updated list of liked people
+function refreshTable(response){getUsers();}
+
+function getUsers(){
+      var token = '{{csrf_token}}';
+    $.ajax({
+      headers: {"X-CSRFToken" : token},
+      type: 'GET',
+      url: '/getUsersWithSameHobbies',
+      success: renderMemberTable,
+      error: function(e){console.log("error: " + e)},
+    });
+  }
+//getUsers is called when the document is ready so the table can be rendered with the most up to date information
+$("#membertable").ready(getUsers());
+</script>
+{% endblock %}

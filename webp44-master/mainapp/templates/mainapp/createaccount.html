@@ -1,0 +1,53 @@
+{% extends "mainapp/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-4">
+			<h2>Create an account</h2>
+      <form method='POST' action="{% url 'createAccount' %}" enctype="multipart/form-data" style="font-size: 14px !important">
+      	{% csrf_token %}
+			  <div class="form-group">
+			    {{form.username}} <div id = "info"></div>
+			  </div>
+				<div class="form-group">
+					{{form.password}}
+				</div>
+        <div class="form-group">
+          {{form.email}}
+        </div>
+        <div class="form-group">
+          <label for="dob">Date of Birth</label><br/>
+          {{form.dob}}
+        </div>
+        <div class="form-group">
+          <label for="File">Profile Image</label><br/>
+          {{form.file}}
+        </div>
+        <div class="form-group">
+          <label for="Gender">Gender</label><br/>
+          {{form.gender}}
+        </div>
+        <div class="form-group">
+          <label for="Hobbies">Hobbies</label><br/>
+          {{form.hobbies}}
+        </div>
+
+        <input type='submit' id="btn"class="btn btn-info" value='Sign up'>
+			</br></br>
+				<a style="font-size: 16px !important" href ="/login">Have an account already? Click here.</a>
+			</form>
+
+    </div>
+    <div class="col-sm-1">
+    </div>
+
+  </div>
+</div>
+<br/><br/>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "mainapp/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+    <div class="col-sm-6" id="profileDetails">
+		 	<h1>Your Profile</h1><br>
+			<img height=150 src={{profile.image.url}} class="img-circle">
+			<h3> {{user.username}}</h3>
+			<h4>{{profile.dob}}</h4>
+			<h4>{{user.gender}}</h4>
+			<h4 id="hobbies">{{hobbies}}</h4>
+      <a href= "{% url 'editprofile' %}"button type="submit" id="btn"class="btn btn-info btn-lg center-block">Edit Profile</a></button>
+    </div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+{% endblock %}
